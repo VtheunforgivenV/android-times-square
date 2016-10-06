@@ -9,13 +9,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
+import com.squareup.timessquare.DefaultDayViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,34 +61,18 @@ public class SampleTimesSquareActivity extends Activity {
         final Button dialog = (Button) findViewById(R.id.button_dialog);
         final Button customized = (Button) findViewById(R.id.button_customized);
         final Button decorator = (Button) findViewById(R.id.button_decorator);
-        final Button rtl = (Button) findViewById(R.id.button_rtl);
-        final Switch endDateSwitch = (Switch) findViewById(R.id.enddate);
-        final Switch firstDateSwitch = (Switch) findViewById(R.id.firstdate);
+        final Button hebrew = (Button) findViewById(R.id.button_hebrew);
+        final Button arabic = (Button) findViewById(R.id.button_arabic);
+        final Button customView = (Button) findViewById(R.id.button_custom_view);
 
-        firstDateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                calendar.setRangeMode(CalendarPickerView.RangeMode.STARTDATE);
-                calendar.scrollToDate(calendar.getSelectedDates().get(0));
-            }
-        });
-
-
-        endDateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                calendar.setRangeMode(CalendarPickerView.RangeMode.ENDDATE);
-                calendar.scrollToDate(calendar.getSelectedDates().get(calendar.getSelectedDates().size() - 1));
-            }
-        });
-
-        modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator));
+        modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
 
         single.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 setButtonsEnabled(single);
 
+                calendar.setCustomDayView(new DefaultDayViewAdapter());
                 calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
                 calendar.init(lastYear.getTime(), nextYear.getTime()) //
                         .inMode(SelectionMode.SINGLE) //
@@ -102,6 +85,7 @@ public class SampleTimesSquareActivity extends Activity {
             public void onClick(View v) {
                 setButtonsEnabled(multi);
 
+                calendar.setCustomDayView(new DefaultDayViewAdapter());
                 Calendar today = Calendar.getInstance();
                 ArrayList<Date> dates = new ArrayList<Date>();
                 for (int i = 0; i < 5; i++) {
@@ -120,6 +104,7 @@ public class SampleTimesSquareActivity extends Activity {
             public void onClick(View v) {
                 setButtonsEnabled(range);
 
+                calendar.setCustomDayView(new DefaultDayViewAdapter());
                 Calendar today = Calendar.getInstance();
                 ArrayList<Date> dates = new ArrayList<Date>();
                 today.add(Calendar.DATE, 3);
@@ -138,6 +123,7 @@ public class SampleTimesSquareActivity extends Activity {
             public void onClick(View v) {
                 setButtonsEnabled(displayOnly);
 
+                calendar.setCustomDayView(new DefaultDayViewAdapter());
                 calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
                 calendar.init(new Date(), nextYear.getTime()) //
                         .inMode(SelectionMode.SINGLE) //
@@ -170,6 +156,7 @@ public class SampleTimesSquareActivity extends Activity {
             public void onClick(View v) {
                 setButtonsEnabled(decorator);
 
+                calendar.setCustomDayView(new DefaultDayViewAdapter());
                 calendar.setDecorators(Arrays.<CalendarCellDecorator>asList(new SampleDecorator()));
                 calendar.init(lastYear.getTime(), nextYear.getTime()) //
                         .inMode(SelectionMode.SINGLE) //
@@ -177,11 +164,33 @@ public class SampleTimesSquareActivity extends Activity {
             }
         });
 
-        rtl.setOnClickListener(new OnClickListener() {
+        hebrew.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCalendarInDialog("I'm right-to-left!", R.layout.dialog);
+                showCalendarInDialog("I'm Hebrew!", R.layout.dialog);
                 dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
+                        .withSelectedDate(new Date());
+            }
+        });
+
+        arabic.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCalendarInDialog("I'm Arabic!", R.layout.dialog);
+                dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
+                        .withSelectedDate(new Date());
+            }
+        });
+
+        customView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setButtonsEnabled(customView);
+
+                calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
+                calendar.setCustomDayView(new SampleDayViewAdapter());
+                calendar.init(lastYear.getTime(), nextYear.getTime())
+                        .inMode(SelectionMode.SINGLE)
                         .withSelectedDate(new Date());
             }
         });

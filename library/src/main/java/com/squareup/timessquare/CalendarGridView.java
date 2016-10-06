@@ -19,6 +19,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
  * The first row is assumed to be a header and no divider is drawn above it.
  */
 public class CalendarGridView extends ViewGroup {
+
     /**
      * The grid lines don't exactly line up on certain devices (Nexus 7, Nexus 5). Fudging the
      * co-ordinates by half a point seems to fix this without breaking other devices.
@@ -33,7 +34,13 @@ public class CalendarGridView extends ViewGroup {
     public CalendarGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         dividerPaint.setColor(getResources().getColor(R.color.calendar_divider));
-    }
+	}
+
+  	public void setDayViewAdapter(DayViewAdapter adapter) {
+    	for (int i = 0; i < getChildCount(); i++) {
+      		((CalendarRowView) getChildAt(i)).setDayViewAdapter(adapter);
+    	}
+  	}
 
     public void setDividerColor(int color) {
         dividerPaint.setColor(color);

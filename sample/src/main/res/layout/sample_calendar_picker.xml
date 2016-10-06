@@ -2,12 +2,10 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
-
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,8 +20,8 @@
                 android:id="@+id/button_single"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="@string/Single"/>
+                android:text="@string/Single"
+                android:enabled="false"/>
 
             <Button
                 android:id="@+id/button_multi"
@@ -62,48 +60,37 @@
                 android:text="@string/Decorator"/>
 
             <Button
-                android:id="@+id/button_rtl"
+                android:id="@+id/button_hebrew"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/RTL"/>
+                android:text="@string/Hebrew"/>
+
+            <Button
+                android:id="@+id/button_arabic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Arabic"/>
+
+            <Button
+                android:id="@+id/button_custom_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/CustomView"/>
         </LinearLayout>
     </HorizontalScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Switch
-            android:id="@+id/enddate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="Enddate mode"/>
-
-        <Switch
-            android:id="@+id/firstdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="Firstdate mode"/>
-
-    </LinearLayout>
 
     <com.squareup.timessquare.CalendarPickerView
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#FFFFFF"
-        android:clipToPadding="false"
-        app:tsquare_displayCellDivider="false"
-        android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
+        android:paddingBottom="16dp"
         android:scrollbarStyle="outsideOverlay"
+        android:clipToPadding="false"
+        android:background="#FFFFFF"
         />
-
     <Button
         android:id="@+id/done_button"
         android:layout_width="match_parent"

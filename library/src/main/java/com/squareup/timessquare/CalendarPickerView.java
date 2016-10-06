@@ -20,7 +20,6 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -109,6 +108,7 @@ public class CalendarPickerView extends ListView {
     private CellClickInterceptor cellClickInterceptor;
     private List<CalendarCellDecorator> decorators;
     private RangeMode mRangeMode = RangeMode.STARTDATE;
+    private DayViewAdapter dayViewAdapter = new DefaultDayViewAdapter();
 
     public void setDecorators(List<CalendarCellDecorator> decorators) {
         this.decorators = decorators;
@@ -288,7 +288,7 @@ public class CalendarPickerView extends ListView {
          * visible.
          */
         public FluentInitializer withSelectedDate(Date selectedDates) {
-            return withSelectedDates(Arrays.asList(selectedDates));
+            return withSelectedDates(Collections.singletonList(selectedDates));
         }
 
         /**
@@ -320,7 +320,7 @@ public class CalendarPickerView extends ListView {
         }
 
         public FluentInitializer withHighlightedDate(Date date) {
-            return withHighlightedDates(Arrays.asList(date));
+            return withHighlightedDates(Collections.singletonList(date));
         }
 
         @SuppressLint("SimpleDateFormat")
@@ -968,7 +968,7 @@ public class CalendarPickerView extends ListView {
                 monthView =
                         MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
                                 dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, displayCellDivider,
-                                headerTextColor, decorators, locale);
+                                headerTextColor, decorators, locale, dayViewAdapter);
             } else {
                 monthView.setDecorators(decorators);
             }
@@ -996,11 +996,11 @@ public class CalendarPickerView extends ListView {
         while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
                 && cal.get(YEAR) <= month.getYear()) {
             Logr.d("Building week row starting at %s", cal.getTime());
-            List<MonthCellDescriptor> weekCells = new ArrayList<MonthCellDescriptor>();
+            List<MonthCellDescriptor> weekCells = new ArrayList<>();
             cells.add(weekCells);
             for (int c = 0; c < 7; c++) {
                 Date date = cal.getTime();
-                boolean isCurrentMonth = cal.get(MONTH) == month.getMonth();
+                boolean isCurrentMonth = (int) cal.get(MONTH) == month.getMonth();
                 boolean isSelected = isCurrentMonth && containsDate(selectedCals, cal);
                 boolean isSelectable =
                         isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
@@ -1085,7 +1085,7 @@ public class CalendarPickerView extends ListView {
     }
 
     private static boolean sameMonth(Calendar cal, MonthDescriptor month) {
-        return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
+        return ((int)cal.get(MONTH) == month.getMonth() && (int)cal.get(YEAR) == month.getYear());
     }
 
     private boolean isDateSelectable(Date date) {
@@ -1114,6 +1114,19 @@ public class CalendarPickerView extends ListView {
      */
     public void setDateSelectableFilter(DateSelectableFilter listener) {
         dateConfiguredListener = listener;
+    }
+
+    /**
+     * Set an adapter used to initialize {@link CalendarCellView} with custom layout.
+     * <p>
+     * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+     * it will not be consistently applied.
+     */
+    public void setCustomDayView(DayViewAdapter dayViewAdapter) {
+        this.dayViewAdapter = dayViewAdapter;
+        if (null != adapter) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**
